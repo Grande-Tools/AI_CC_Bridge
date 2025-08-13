@@ -9,9 +9,10 @@ A TypeScript library that bridges any project with your local Claude Code CLI, e
 - 🚀 **Easy Integration**: Drop-in library for any Node.js/TypeScript project
 - 🔄 **External Session Management**: Your application controls session UUIDs and lifecycle
 - 🎯 **Smart Session Logic**: Auto-resume existing sessions or create new ones
+- 🧩 **MCP Ready**: Works seamlessly with your MCP configurations
 - 🛡️ **Error Handling**: Comprehensive error handling and logging
 - 📝 **TypeScript**: Full TypeScript support with comprehensive type definitions
-- 🔧 **Configurable**: Flexible configuration options for Claude Code CLI
+- 🔧 **Zero Configuration**: Just install and use
 
 ## Installation
 
@@ -25,8 +26,13 @@ npm install github:Grande-Tools/AI_CC_Bridge
 npm install -g @anthropic-ai/claude-code
 ```
 
+**Auto-Setup**: When you install AI-CC-Bridge, it automatically creates:
+- `.mcp.json` (empty - configure your MCP servers here)
+- `.claude/settings.json` (enables MCP permissions automatically)
+
 ## Quick Start
 
+### Basic Usage
 ```typescript
 import { CCModules } from '@grande-tools/ai-cc-bridge';
 import { randomUUID } from 'crypto';
@@ -45,6 +51,21 @@ const response1 = await ccModules.ask('What is TypeScript?', sessionId);
 const response2 = await ccModules.ask('Give me an example', sessionId);
 ```
 
+### With MCP Support
+```typescript
+import { CCModules } from '@grande-tools/ai-cc-bridge';
+import { randomUUID } from 'crypto';
+
+// Create with MCP permission handling
+const ccModules = CCModules.createWithMCPSupport();
+await ccModules.initialize();
+
+const sessionId = randomUUID();
+
+// Use any MCP servers you've configured in .mcp.json
+const response = await ccModules.ask('your question here', sessionId);
+```
+
 ## API Reference
 
 ### CCModules Class
@@ -52,6 +73,7 @@ const response2 = await ccModules.ask('Give me an example', sessionId);
 #### Static Methods
 
 - `CCModules.create(config?, silent?)` - Create a new instance
+- `CCModules.createWithMCPSupport(config?, silent?)` - Create with MCP permission handling
 
 #### Instance Methods
 
@@ -68,6 +90,7 @@ interface ClaudeCodeConfig {
   outputFormat?: 'text' | 'json' | 'stream-json';
   verbose?: boolean;                 // Enable verbose logging
   timeout?: number;                  // Request timeout in milliseconds
+  dangerouslySkipPermissions?: boolean; // Skip MCP permission prompts
 }
 ```
 
@@ -81,6 +104,23 @@ interface ClaudeCodeResponse {
   executionTime?: number;            // Execution time in milliseconds
 }
 ```
+
+## MCP Configuration (Optional)
+
+If you want to use MCP servers, configure them in `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "your-server": {
+      "type": "http",
+      "url": "https://your-mcp-server.com/mcp"
+    }
+  }
+}
+```
+
+The library handles MCP permissions automatically - no additional setup needed.
 
 ## Examples
 

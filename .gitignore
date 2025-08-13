@@ -53,3 +53,4 @@ pids
 examples/
 __tests__
 test/
+.mcp.json

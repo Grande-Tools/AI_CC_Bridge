@@ -3,6 +3,7 @@ export interface ClaudeCodeConfig {
   outputFormat?: 'text' | 'json' | 'stream-json';
   verbose?: boolean;
   timeout?: number;
+  dangerouslySkipPermissions?: boolean;
 }
 
 export interface ClaudeCodeResponse {

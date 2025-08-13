@@ -61,4 +61,18 @@ export class CCModules {
   async getClaudeVersion(): Promise<string | null> {
     return this.client.getVersion();
   }
+
+  // MCP Support - just handles permissions, no file management
+  static createWithMCPSupport(
+    config: ClaudeCodeConfig = {},
+    silent = false
+  ): CCModules {
+    // Enable skip permissions by default for MCP
+    const mcpConfig = {
+      dangerouslySkipPermissions: true,
+      ...config
+    };
+
+    return new CCModules(mcpConfig, silent ? new NoOpLogger() : new ConsoleLogger(LogLevel.INFO));
+  }
 }

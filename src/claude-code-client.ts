@@ -94,6 +94,10 @@ export class ClaudeCodeClientImpl implements ClaudeCodeClient {
     if (config.verbose) {
       command += ' --verbose';
     }
+
+    if (config.dangerouslySkipPermissions) {
+      command += ' --dangerously-skip-permissions';
+    }
     
     return command;
   }
