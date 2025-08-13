@@ -1,6 +1,6 @@
-import { ClaudeCodeClientImpl } from './claude-code-client';
-import { ClaudeCodeConfig, ClaudeCodeResponse } from './types';
-import { Logger, ConsoleLogger, LogLevel, NoOpLogger } from './logger';
+import { ClaudeCodeClientImpl } from "./claude-code-client";
+import { ClaudeCodeConfig, ClaudeCodeResponse } from "./types";
+import { Logger, ConsoleLogger, LogLevel, NoOpLogger } from "./logger";
 
 export class CCModules {
   private client: ClaudeCodeClientImpl;
@@ -17,34 +17,42 @@ export class CCModules {
   }
 
   async initialize(): Promise<boolean> {
-    this.logger.info('Initializing CC-Modules...');
-    
     const isAvailable = await this.client.isClaudeCodeAvailable();
     if (!isAvailable) {
-      this.logger.error('Claude Code CLI not found. Please ensure claude is installed and available in PATH.');
+      this.logger.error(
+        "Claude Code CLI not found. Please ensure claude is installed and available in PATH."
+      );
       return false;
     }
 
-    const version = await this.client.getVersion();
-    this.logger.info(`Claude Code CLI detected. Version: ${version || 'unknown'}`);
-    
     return true;
   }
 
-  async ask(prompt: string, sessionId: string, config?: ClaudeCodeConfig): Promise<ClaudeCodeResponse> {
-    this.logger.debug(`Sending session query to Claude Code: ${prompt.substring(0, 100)}...`);
-    
-    const response = await this.client.queryWithSessionId(prompt, sessionId, config);
-    
+  async ask(
+    prompt: string,
+    sessionId: string,
+    config?: ClaudeCodeConfig
+  ): Promise<ClaudeCodeResponse> {
+    this.logger.debug(
+      `Sending session query to Claude Code: ${prompt.substring(0, 100)}...`
+    );
+
+    const response = await this.client.queryWithSessionId(
+      prompt,
+      sessionId,
+      config
+    );
+
     if (response.success) {
-      this.logger.debug(`Session query completed successfully in ${response.executionTime}ms`);
+      this.logger.debug(
+        `Session query completed successfully in ${response.executionTime}ms`
+      );
     } else {
       this.logger.error(`Session query failed: ${response.error}`);
     }
-    
+
     return response;
   }
-
 
   async isReady(): Promise<boolean> {
     return this.client.isClaudeCodeAvailable();
