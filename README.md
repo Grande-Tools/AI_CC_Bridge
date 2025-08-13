@@ -1,4 +1,6 @@
-# CC-Modules
+# AI-CC-Bridge
+
+> 📖 **Quick Start**: See [HOW-TO-USE.md](./HOW-TO-USE.md) for step-by-step integration examples.
 
 A TypeScript library that bridges any project with your local Claude Code CLI, enabling seamless AI-powered assistance in your applications.
 
@@ -29,7 +31,7 @@ npm install -g @anthropic-ai/claude-code
 import { CCModules } from '@grande-tools/ai-cc-bridge';
 import { randomUUID } from 'crypto';
 
-// Initialize CC-Modules
+// Initialize AI-CC-Bridge
 const ccModules = CCModules.create();
 await ccModules.initialize();
 
@@ -245,7 +247,7 @@ client.on(Events.MessageCreate, async (message) => {
 
 ## How Session Management Works
 
-CC-Modules uses a smart session strategy:
+AI-CC-Bridge uses a smart session strategy:
 
 1. **First call with UUID**: Tries `--resume UUID`, falls back to `--session-id UUID` (creates new)
 2. **Subsequent calls**: Uses `--resume UUID` to continue existing conversation

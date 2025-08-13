@@ -1,4 +1,4 @@
-# How to Use CC-Modules
+# How to Use AI-CC-Bridge
 
 ## Step 1: Install
 
