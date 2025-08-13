@@ -1,0 +1,44 @@
+{
+  "name": "@grande-tools/ai-cc-bridge",
+  "version": "1.0.0",
+  "description": "A TypeScript library to bridge any project with local Claude Code CLI",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "claude-code",
+    "ai",
+    "cli-bridge",
+    "typescript",
+    "automation"
+  ],
+  "author": "CC-Modules Team",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grande-Tools/AI_CC_Bridge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Grande-Tools/AI_CC_Bridge/issues"
+  },
+  "homepage": "https://github.com/Grande-Tools/AI_CC_Bridge#readme",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
