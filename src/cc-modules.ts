@@ -1,6 +1,7 @@
 import { ClaudeCodeClientImpl } from "./claude-code-client";
 import { ClaudeCodeConfig, ClaudeCodeResponse } from "./types";
 import { Logger, ConsoleLogger, LogLevel, NoOpLogger } from "./logger";
+import { ClaudeMemoryReader } from "./claude-memory";
 
 export class CCModules {
   private client: ClaudeCodeClientImpl;
@@ -37,8 +38,18 @@ export class CCModules {
       `Sending session query to Claude Code: ${prompt.substring(0, 100)}...`
     );
 
+    // Check if we should include CLAUDE.md context
+    let enhancedPrompt = prompt;
+    if (config?.includeClaude !== false) { // Default to true unless explicitly disabled
+      const claudeContext = await this.getClaudeContext();
+      if (claudeContext) {
+        enhancedPrompt = `${claudeContext}\n\n---\n\n${prompt}`;
+        this.logger.debug('Added CLAUDE.md context to prompt');
+      }
+    }
+
     const response = await this.client.queryWithSessionId(
-      prompt,
+      enhancedPrompt,
       sessionId,
       config
     );
@@ -60,6 +71,19 @@ export class CCModules {
 
   async getClaudeVersion(): Promise<string | null> {
     return this.client.getVersion();
+  }
+
+  async getClaudeContext(startDir?: string): Promise<string | null> {
+    try {
+      const memoryFiles = await ClaudeMemoryReader.findAndReadClaudeFiles(startDir);
+      if (memoryFiles.length === 0) {
+        return null;
+      }
+      return ClaudeMemoryReader.formatForClaudeContext(memoryFiles);
+    } catch (error) {
+      this.logger.warn(`Failed to read CLAUDE.md files: ${error}`);
+      return null;
+    }
   }
 
   // MCP Support - just handles permissions, no file management

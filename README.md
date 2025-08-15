@@ -13,6 +13,7 @@ A TypeScript library that bridges any project with your local Claude Code CLI, e
 - 🛡️ **Error Handling**: Comprehensive error handling and logging
 - 📝 **TypeScript**: Full TypeScript support with comprehensive type definitions
 - 🔧 **Zero Configuration**: Just install and use
+- 📄 **CLAUDE.md Support**: Automatically reads and includes project context from CLAUDE.md files
 
 ## Installation
 
@@ -81,6 +82,7 @@ const response = await ccModules.ask('your question here', sessionId);
 - `ask(prompt, sessionId, config?)` - Send a query to Claude Code with session management
 - `isReady()` - Check if Claude Code CLI is available
 - `getClaudeVersion()` - Get Claude Code CLI version
+- `getClaudeContext(startDir?)` - Read and format CLAUDE.md files for context
 
 ### Configuration Options
 
@@ -91,6 +93,7 @@ interface ClaudeCodeConfig {
   verbose?: boolean;                 // Enable verbose logging
   timeout?: number;                  // Request timeout in milliseconds
   dangerouslySkipPermissions?: boolean; // Skip MCP permission prompts
+  includeClaude?: boolean;           // Include CLAUDE.md context (default: true)
 }
 ```
 
@@ -121,6 +124,72 @@ If you want to use MCP servers, configure them in `.mcp.json`:
 ```
 
 The library handles MCP permissions automatically - no additional setup needed.
+
+## CLAUDE.md Support
+
+AI-CC-Bridge automatically detects and includes CLAUDE.md files to provide project context to Claude. This enables better, more contextual responses.
+
+### How it Works
+
+1. **Auto-Detection**: Searches for `CLAUDE.md` or `CLAUDE.local.md` files starting from current directory up to project root
+2. **Hierarchical Context**: Combines multiple CLAUDE.md files (project root, subdirectories)
+3. **Smart Integration**: Automatically prepends context to your prompts unless disabled
+
+### Example CLAUDE.md Structure
+
+```markdown
+# My Project
+
+Brief overview of what this project does.
+
+## Tech Stack
+- Framework: Next.js 14
+- Language: TypeScript 5.2
+- Database: PostgreSQL
+
+## Project Structure
+- `src/app`: Next.js App Router pages
+- `src/components`: Reusable React components
+- `src/lib`: Core utilities
+
+## Commands
+- `npm run dev`: Start development server
+- `npm run build`: Build for production
+- `npm test`: Run tests
+
+## Code Style
+- Use ES modules (import/export)
+- Prefer functional components
+- Follow conventional commits
+```
+
+### Configuration Options
+
+```typescript
+// Include CLAUDE.md context (default)
+const response = await ccModules.ask('Help me implement a user component', sessionId);
+
+// Disable CLAUDE.md context for specific requests
+const response = await ccModules.ask('Generic question', sessionId, { includeClaude: false });
+
+// Manually get CLAUDE.md context
+const context = await ccModules.getClaudeContext();
+```
+
+### Using ClaudeMemoryReader Directly
+
+```typescript
+import { ClaudeMemoryReader } from '@grande-tools/ai-cc-bridge';
+
+// Find and read all CLAUDE.md files
+const memoryFiles = await ClaudeMemoryReader.findAndReadClaudeFiles();
+
+// Get formatted context string
+const context = ClaudeMemoryReader.formatForClaudeContext(memoryFiles);
+
+// Search for specific sections
+const techStackSections = ClaudeMemoryReader.getSectionsByTitle(memoryFiles, 'tech stack');
+```
 
 ## Examples
 

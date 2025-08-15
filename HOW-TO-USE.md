@@ -11,6 +11,8 @@ npm install -g @anthropic-ai/claude-code
 - `.mcp.json` (empty - configure your MCP servers if needed)
 - `.claude/settings.json` (enables MCP permissions)
 
+**CLAUDE.md Support**: Automatically detects and includes project context from CLAUDE.md files
+
 ## Step 2: Basic Usage
 
 ```javascript
@@ -162,7 +164,8 @@ const ccModules = CCModules.create({
 const ccModules = CCModules.createWithMCPSupport({
   model: 'claude-3-5-sonnet-20241022',
   timeout: 45000,
-  dangerouslySkipPermissions: true  // Already enabled by default
+  dangerouslySkipPermissions: true,  // Already enabled by default
+  includeClaude: true                // Include CLAUDE.md context (default)
 });
 ```
 
@@ -182,6 +185,38 @@ If you want to use MCP servers, edit `.mcp.json`:
 ```
 
 The library handles all MCP permissions automatically.
+
+## CLAUDE.md Project Context
+
+Add a `CLAUDE.md` file to your project root to provide context that will be automatically included:
+
+```markdown
+# My Project
+
+This is a Node.js application that...
+
+## Tech Stack
+- Runtime: Node.js 18+
+- Framework: Express.js
+- Database: MongoDB
+
+## Structure
+- `src/routes/`: API endpoints
+- `src/models/`: Database models
+- `src/utils/`: Helper functions
+
+## Commands
+- `npm start`: Start the server
+- `npm test`: Run tests
+- `npm run dev`: Development mode
+
+## Guidelines
+- Use async/await syntax
+- Follow REST API conventions
+- Write tests for new features
+```
+
+The library will automatically include this context in your prompts for better responses.
 
 ## Error Handling
 
@@ -237,3 +272,4 @@ const config = { timeout: 30000 }; // 30 seconds
 - **MCP Ready**: Works with any MCP servers you configure
 - **Auto-Setup**: Installation handles MCP permissions automatically
 - **Production**: Store sessionIds in your database
+- **Project Context**: Use CLAUDE.md files to provide automatic project context

@@ -4,6 +4,7 @@ export interface ClaudeCodeConfig {
   verbose?: boolean;
   timeout?: number;
   dangerouslySkipPermissions?: boolean;
+  includeClaude?: boolean; // Auto-detect and include CLAUDE.md files
 }
 
 export interface ClaudeCodeResponse {
@@ -24,4 +25,16 @@ export interface Logger {
   warn(message: string, ...args: any[]): void;
   info(message: string, ...args: any[]): void;
   debug(message: string, ...args: any[]): void;
+}
+
+export interface ClaudeMemorySection {
+  title: string;
+  content: string;
+  level: number; // Header level (1-6)
+}
+
+export interface ClaudeMemoryFile {
+  filePath: string;
+  sections: ClaudeMemorySection[];
+  rawContent: string;
 }
