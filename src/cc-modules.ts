@@ -40,11 +40,12 @@ export class CCModules {
 
     // Check if we should include CLAUDE.md context
     let enhancedPrompt = prompt;
-    if (config?.includeClaude !== false) { // Default to true unless explicitly disabled
+    if (config?.includeClaude !== false) {
+      // Default to true unless explicitly disabled
       const claudeContext = await this.getClaudeContext();
       if (claudeContext) {
         enhancedPrompt = `${claudeContext}\n\n---\n\n${prompt}`;
-        this.logger.debug('Added CLAUDE.md context to prompt');
+        this.logger.debug("Added CLAUDE.md context to prompt");
       }
     }
 
@@ -75,7 +76,9 @@ export class CCModules {
 
   async getClaudeContext(startDir?: string): Promise<string | null> {
     try {
-      const memoryFiles = await ClaudeMemoryReader.findAndReadClaudeFiles(startDir);
+      const memoryFiles = await ClaudeMemoryReader.findAndReadClaudeFiles(
+        startDir
+      );
       if (memoryFiles.length === 0) {
         return null;
       }
@@ -93,10 +96,13 @@ export class CCModules {
   ): CCModules {
     // Enable skip permissions by default for MCP
     const mcpConfig = {
-      dangerouslySkipPermissions: true,
-      ...config
+      // dangerouslySkipPermissions: true,
+      ...config,
     };
 
-    return new CCModules(mcpConfig, silent ? new NoOpLogger() : new ConsoleLogger(LogLevel.INFO));
+    return new CCModules(
+      mcpConfig,
+      silent ? new NoOpLogger() : new ConsoleLogger(LogLevel.INFO)
+    );
   }
 }

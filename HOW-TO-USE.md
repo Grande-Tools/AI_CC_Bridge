@@ -7,9 +7,13 @@ npm install github:Grande-Tools/AI_CC_Bridge
 npm install -g @anthropic-ai/claude-code
 ```
 
-**Auto-Setup**: Installation automatically creates:
-- `.mcp.json` (empty - configure your MCP servers if needed)
-- `.claude/settings.json` (enables MCP permissions)
+**Auto-Setup**: Installation automatically:
+- Creates `.mcp.json` (empty - configure your MCP servers if needed)
+- Discovers all MCP tools from existing `.mcp.json` files  
+- Creates `.claude/settings.json` with:
+  - Individual MCP tools in allow list
+  - Bash commands blocked with `Bash(*)` deny pattern
+  - Auto MCP approval enabled
 
 **CLAUDE.md Support**: Automatically detects and includes project context from CLAUDE.md files
 
@@ -50,6 +54,77 @@ const sessionId = randomUUID();
 const response = await ccModules.ask('your question', sessionId);
 console.log(response.data);
 ```
+
+## Step 4: MCP Configuration & Discovery
+
+### Supported MCP Transports
+
+Configure any MCP server type in `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "websocket-server": {
+      "type": "websocket",
+      "url": "wss://ws-mcp.example.com/mcp"  
+    },
+    "local-server": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["my-mcp-server.js"]
+    },
+    "sse-server": {
+      "type": "sse", 
+      "url": "https://sse-mcp.example.com/mcp"
+    }
+  }
+}
+```
+
+### Automatic Tool Discovery
+
+The library automatically discovers tools:
+
+```javascript
+const { setupMcpPermissions } = require('@grande-tools/ai-cc-bridge');
+
+// Discover and configure all MCP tools
+await setupMcpPermissions('./my-project');
+
+// Creates .claude/settings.json with:
+// {
+//   "permissions": {
+//     "allow": ["mcp__context7__resolve-library-id", "mcp__context7__get-library-docs"],
+//     "deny": ["Bash(*)"]
+//   },
+//   "enableAllProjectMcpServers": true
+// }
+```
+
+### Manual Discovery
+
+```javascript
+const { discoverMcpTools } = require('@grande-tools/ai-cc-bridge');
+
+// Just discover tools (no settings update)
+const result = await discoverMcpTools('./my-project');
+
+console.log('Found tools:');
+result.tools.forEach(tool => {
+  console.log(`- ${tool.fullToolName} (from ${tool.serverName})`);
+});
+```
+
+### Security Features
+
+- **Bash Blocking**: All `Bash(*)` commands are automatically denied
+- **Individual Tools**: Only discovered MCP tools are allowed  
+- **Smart Fallback**: Tries multiple transports if connection fails
+- **Safe by Default**: Blocks dangerous commands while allowing legitimate tools
 
 ## Real-World Examples
 

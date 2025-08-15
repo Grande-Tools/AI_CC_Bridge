@@ -39,7 +39,9 @@
     "eslint": "^8.0.0",
     "typescript": "^5.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
   "engines": {
     "node": ">=16.0.0"
   }

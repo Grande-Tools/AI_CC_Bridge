@@ -10,7 +10,9 @@ A TypeScript library that bridges any project with your local Claude Code CLI, e
 - 🔄 **External Session Management**: Your application controls session UUIDs and lifecycle
 - 🎯 **Smart Session Logic**: Auto-resume existing sessions or create new ones
 - 🧩 **MCP Ready**: Works seamlessly with your MCP configurations
-- 🛡️ **Error Handling**: Comprehensive error handling and logging
+- 🔍 **Auto MCP Discovery**: Automatically discovers and configures MCP tools from all transport types
+- 🛡️ **Security by Default**: Blocks dangerous bash commands with built-in deny list
+- 🚀 **All Transports**: Supports stdio, HTTP, SSE, and WebSocket MCP transports
 - 📝 **TypeScript**: Full TypeScript support with comprehensive type definitions
 - 🔧 **Zero Configuration**: Just install and use
 - 📄 **CLAUDE.md Support**: Automatically reads and includes project context from CLAUDE.md files
@@ -27,9 +29,13 @@ npm install github:Grande-Tools/AI_CC_Bridge
 npm install -g @anthropic-ai/claude-code
 ```
 
-**Auto-Setup**: When you install AI-CC-Bridge, it automatically creates:
-- `.mcp.json` (empty - configure your MCP servers here)
-- `.claude/settings.json` (enables MCP permissions automatically)
+**Auto-Setup**: When you install AI-CC-Bridge, it automatically:
+- Creates `.mcp.json` (empty - configure your MCP servers here)
+- Discovers all MCP tools from existing `.mcp.json` files
+- Creates `.claude/settings.json` with:
+  - Allow list for discovered MCP tools
+  - Deny list blocking all Bash commands (`Bash(*)`)
+  - MCP auto-approval enabled
 
 ## Quick Start
 
@@ -108,22 +114,62 @@ interface ClaudeCodeResponse {
 }
 ```
 
-## MCP Configuration (Optional)
+## MCP Configuration & Auto-Discovery
 
-If you want to use MCP servers, configure them in `.mcp.json`:
+### Supported Transport Types
+
+AI-CC-Bridge supports all MCP transport types:
 
 ```json
 {
   "mcpServers": {
-    "your-server": {
+    "http-server": {
       "type": "http",
       "url": "https://your-mcp-server.com/mcp"
+    },
+    "websocket-server": {
+      "type": "websocket", 
+      "url": "wss://ws-server.com/mcp"
+    },
+    "sse-server": {
+      "type": "sse",
+      "url": "https://sse-server.com/mcp"
+    },
+    "local-server": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["server.js"]
     }
   }
 }
 ```
 
-The library handles MCP permissions automatically - no additional setup needed.
+### Automatic Tool Discovery
+
+The library automatically:
+1. **Discovers**: Connects to each MCP server using proper transport
+2. **Lists Tools**: Calls `listTools()` to get actual tool names
+3. **Smart Fallback**: Tries multiple transports if one fails
+4. **Security**: Adds individual tools to allow list, blocks all Bash commands
+
+### Manual Discovery
+
+```typescript
+import { setupMcpPermissions, discoverMcpTools } from '@grande-tools/ai-cc-bridge';
+
+// Complete setup (recommended)
+await setupMcpPermissions('./project-path');
+
+// Discovery only (no settings update)  
+const result = await discoverMcpTools('./project-path');
+console.log(result.tools); // Individual tool names
+```
+
+### Security Features
+
+- **Auto Bash Deny**: Adds `Bash(*)` to deny list by default
+- **Individual Tool Allow**: Discovers specific tools like `mcp__context7__resolve-library-id`
+- **Transport Fallback**: Tries HTTP → SSE → WebSocket automatically
 
 ## CLAUDE.md Support
 
