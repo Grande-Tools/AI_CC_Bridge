@@ -98,8 +98,8 @@ await setupMcpPermissions('./my-project');
 // Creates .claude/settings.json with:
 // {
 //   "permissions": {
-//     "allow": ["mcp__context7__resolve-library-id", "mcp__context7__get-library-docs"],
-//     "deny": ["Bash(*)", "Read(*)", "Write(*)", "Edit(*)", "Grep(*)", "Glob(*)", "List(*)", "View(*)"]
+//     "allow": ["mcp__context7__resolve-library-id", "mcp__context7__get-library-docs", "Read(./tmp/images/*)"],
+//     "deny": ["Bash(*)", "Write(*)", "Edit(*)", "Grep(*)", "Glob(*)", "List(*)", "View(*)"]
 //   },
 //   "enableAllProjectMcpServers": true
 // }

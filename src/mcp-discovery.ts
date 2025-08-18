@@ -270,17 +270,24 @@ export class McpDiscovery {
       settings.permissions.deny = [];
     }
     
-    // Add discovered MCP tools to allow list (avoiding duplicates)
+    // Add default allow patterns
+    const defaultAllowPatterns = [
+      "Read(./tmp/images/*)"
+    ];
+    
+    // Add discovered MCP tools and default patterns to allow list (avoiding duplicates)
     const currentAllow = new Set(settings.permissions.allow);
     for (const toolName of discoveryResult.allowList) {
       currentAllow.add(toolName);
+    }
+    for (const pattern of defaultAllowPatterns) {
+      currentAllow.add(pattern);
     }
     settings.permissions.allow = Array.from(currentAllow);
     
     // Block ALL Bash functionality and other potentially dangerous tools
     const bashDenyPatterns = [
       "Bash(*)",
-      "Read(*)",
       "Write(*)",
       "Edit(*)",
       "Grep(*)",
