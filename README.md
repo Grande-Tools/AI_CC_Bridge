@@ -34,7 +34,7 @@ npm install -g @anthropic-ai/claude-code
 - Discovers all MCP tools from existing `.mcp.json` files
 - Creates `.claude/settings.json` with:
   - Allow list for discovered MCP tools
-  - Deny list blocking all Bash commands (`Bash(*)`)
+  - Deny list blocking dangerous commands (`Bash(*)`, `Read(*)`, `Write(*)`, `Edit(*)`, `Grep(*)`, `Glob(*)`, `List(*)`, `View(*)`)
   - MCP auto-approval enabled
 
 ## Quick Start
@@ -167,7 +167,7 @@ console.log(result.tools); // Individual tool names
 
 ### Security Features
 
-- **Auto Bash Deny**: Adds `Bash(*)` to deny list by default
+- **Auto Dangerous Tool Deny**: Adds dangerous tools (`Bash(*)`, `Read(*)`, `Write(*)`, `Edit(*)`, `Grep(*)`, `Glob(*)`, `List(*)`, `View(*)`) to deny list by default
 - **Individual Tool Allow**: Discovers specific tools like `mcp__context7__resolve-library-id`
 - **Transport Fallback**: Tries HTTP → SSE → WebSocket automatically
 

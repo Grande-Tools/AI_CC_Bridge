@@ -277,9 +277,16 @@ export class McpDiscovery {
     }
     settings.permissions.allow = Array.from(currentAllow);
     
-    // Block ALL Bash functionality
+    // Block ALL Bash functionality and other potentially dangerous tools
     const bashDenyPatterns = [
-      "Bash(*)"
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Grep(*)",
+      "Glob(*)",
+      "List(*)",
+      "View(*)"
     ];
     
     const currentDeny = new Set(settings.permissions.deny);
